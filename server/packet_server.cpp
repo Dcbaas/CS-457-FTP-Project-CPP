@@ -45,4 +45,14 @@ namespace packet_system{
     }
   }
 
+  void packet::set_acknowledgment(bool acknowledgment){
+    this->acknowledgment = acknowledgment;
+  }
+
+  bool packet::get_acknowledgment() const{ return acknowledgment; }
+
+  packet::~packet(){
+    delete[] packet_contents;
+  }
+
 }  //namespace packet_system
