@@ -27,7 +27,7 @@ namespace file_util{
        * Param: num_bytes The number of bytes being read from the file
        * default is 1024;
        **/
-      void read_file(char* buffer, size_t num_bytes = 1024);
+      void read_file(unsigned char* buffer, size_t num_bytes = 1024);
 
       /**
        * Gets the size of the file

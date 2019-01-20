@@ -29,7 +29,7 @@ namespace packet_system{
        * over the server.
        * Param: acknowledgment, sets the flag for this packet.
        **/
-      packet(file_util::file_obj& file, bool acknowledgment);
+      packet(file_util::file_obj& file, bool acknowledgment, unsigned char order_num);
 
       /**
        * Changes the state of the acknowledgment flag
@@ -53,8 +53,7 @@ namespace packet_system{
       ~packet();
 
     private:
-      //The actual contents that will be sent. this includes the data, a packet type code, an order number,
-      //and in the case of a partial packet, its size.
+      //The contents of the packet, Not including header stuff or the checksum
       unsigned char* packet_contents;
 
       //The checksum for this packet
@@ -63,6 +62,8 @@ namespace packet_system{
       //The size of the packet. Normally this matters in the case of a partial packet. Otherwise its just a 
       //default packet size. 
       unsigned short packet_size;
+
+      unsigned char order_num;
 
       //The order number for this packet in the sliding window. 
       unsigned char window_order_num;
@@ -79,6 +80,14 @@ namespace packet_system{
       //A private member function to calculate the checksum
       void calculate_checksum();
 
+      static constexpr short MAX_CONTENT_SIZE = 1024;
+      static constexpr char PACKET_CODE_SIZE = 3;
+      static constexpr char CHECK_SUM_SIZE = 2;
+      static constexpr char ORDER_NUM_SIZE = 1;
+      static constexpr char SIZE_INDICATOR_SIZE = 2;
+      static constexpr size_t FRONT_MASK = 0xFF00;
+      static constexpr size_t BACK_MASK = 0x00FF;
+      static constexpr unsigned char BITSHIFT = 8;
   };
 }
 
