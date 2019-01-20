@@ -2,7 +2,6 @@
 
 namespace server{
   namespace packet_system{
-    packet::packet(std::ifstream& file_stream, bool acknowledgement){
-    }
-  }
-}
+
+    }  //namespace packet_system
+  } //namespace server
