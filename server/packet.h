@@ -46,6 +46,10 @@ namespace packet_system{
        **/
       bool get_acknowledgment() const;
 
+      char* get_packet() const;
+
+      short get_size() const { return packet_size; }
+
       /**
        * Destroys the packet. Specifically the 
        * packet_contents. 
@@ -54,19 +58,16 @@ namespace packet_system{
 
     private:
       //The contents of the packet, Not including header stuff or the checksum
-      unsigned char* packet_contents;
-
-      //The checksum for this packet
-      unsigned short checksum;
+      char* packet_contents;
 
       //The size of the packet. Normally this matters in the case of a partial packet. Otherwise its just a 
       //default packet size. 
       unsigned short packet_size;
 
-      unsigned char order_num;
+      char order_num;
 
       //The order number for this packet in the sliding window. 
-      unsigned char window_order_num;
+      char window_order_num;
 
       //A stl array to hold the packet code to indicate what type of packet this packet is.
       //I use a stl array because I generally think its safer to use and if I have to pass it around later then I won't 
@@ -87,7 +88,7 @@ namespace packet_system{
       static constexpr char SIZE_INDICATOR_SIZE = 2;
       static constexpr size_t FRONT_MASK = 0xFF00;
       static constexpr size_t BACK_MASK = 0x00FF;
-      static constexpr unsigned char BITSHIFT = 8;
+      static constexpr char BITSHIFT = 8;
   };
 }
 

@@ -3,6 +3,7 @@
 #include <iostream>
 #include <fstream>
 #include <exception>
+#include <vector>
 
 #include <sys/stat.h>
 
@@ -24,7 +25,7 @@ namespace file_util{
 
       if(!out_stream){
         out_stream.close();
-        std::cout << "File failure" << std::endl;
+        std::cout << "File failure" << std::endl << filesize << std::endl;
       }
     }
   }
@@ -33,8 +34,11 @@ namespace file_util{
     return filesize;
   }
 
-  void file_obj::read_file(char* buffer, size_t num_bytes){
+  size_t file_obj::get_rem_size() const{ return remaining_file; }
+
+  void  file_obj::read_file(char* buffer, size_t num_bytes){
     in_stream.read(buffer, num_bytes);
+    std::cout << buffer << std::endl;
   }
 
   file_obj::~file_obj(){

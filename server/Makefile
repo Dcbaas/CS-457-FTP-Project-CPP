@@ -2,7 +2,7 @@
 #Author: David Baas
 
 test: file_util.o test.o
-	clang++ file_util.o test.o
+	clang++ file_util.o packet_server.o test.o -g
 
 packet_server.o: packet_server.cpp
 	clang++ -c packet_server.cpp

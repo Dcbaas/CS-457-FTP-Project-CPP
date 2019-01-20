@@ -1,16 +1,18 @@
 #include <iostream>
 #include "file_util.h"
+#include "packet.h"
 
 int main(int argc, char** argv){
 
   file_util::file_obj test_file{"test.txt", true};
 
-  char* test_buffer = new char[1000];
+  packet_system::packet test_pack{test_file, false, 5};
 
-  test_file.read_file(test_buffer, test_file.get_filesize());
 
-  std::cout << test_buffer << std::endl;
+  char* result = test_pack.get_packet();
 
-  delete[] test_buffer;
+  for(int i = 0; i < test_pack.get_size(); ++i){
+    std::cout << result[i];
+  }
   return 0;
 }
