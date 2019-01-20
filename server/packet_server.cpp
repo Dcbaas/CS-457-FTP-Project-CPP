@@ -1,6 +1,13 @@
 #include "packet.h"
 
 namespace packet_system{
+  packet::packet(){
+    packet_contents = nullptr;
+    packet_size = 0;
+    order_num = 0;
+    acknowledgment = false;
+  }
+
   packet::packet(file_util::file_obj& file, bool acknowledgment, unsigned char order_num): acknowledgment(acknowledgment), order_num(order_num){
 
     //The file remaining is less then 1024 bytes
@@ -52,6 +59,30 @@ namespace packet_system{
   bool packet::get_acknowledgment() const{ return acknowledgment; }
 
   char* packet::get_packet() const{ return packet_contents; }
+
+  void packet::construct_packet(char* data){
+    this->packet_contents = data;
+
+    //Extract the header
+    for(int index = 0; index < PACKET_CODE_SIZE + ORDER_NUM_SIZE; ++index){
+      if(index < 3){
+        packet_code[index] = packet_contents[index];
+      }
+      else{
+        order_num = packet_contents[index];
+      }
+      //Check for partial packet
+      if(packet_contents[0] == 'n'){
+        packet_size = MAX_CONTENT_SIZE + PACKET_CODE_SIZE + ORDER_NUM_SIZE;
+
+      }
+      else if( packet_contents[0] == 's'){
+        packet_size = (packet_contents[4] << BITSHIFT) + packet_contents[5];
+      }
+
+      acknowledgment = true;
+    }
+  }
 
   packet::~packet(){
     delete[] packet_contents;

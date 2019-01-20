@@ -27,6 +27,8 @@ namespace file_util{
         out_stream.close();
         std::cout << "File failure" << std::endl << filesize << std::endl;
       }
+      filesize = 0;
+      remaining_file = 0;
     }
   }
 
@@ -38,6 +40,11 @@ namespace file_util{
 
   void  file_obj::read_file(char* buffer, size_t num_bytes){
     in_stream.read(buffer, num_bytes);
+    std::cout << buffer << std::endl;
+  }
+
+  void file_obj::write_file(char*buffer, size_t num_bytes){
+    out_stream.write(buffer,num_bytes);
   }
 
   file_obj::~file_obj(){
