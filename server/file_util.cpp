@@ -10,7 +10,8 @@
 namespace file_util{
   file_obj::file_obj(){}
 
-  file_obj::file_obj(std::string filename, bool read): filename(filename), read(read){
+  file_obj::file_obj(std::string filename, bool read): 
+  filename(filename), read(read){
     if(read){
       in_stream.open(filename);
 

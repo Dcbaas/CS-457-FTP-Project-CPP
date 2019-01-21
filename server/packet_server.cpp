@@ -10,11 +10,13 @@ namespace packet_system{
     acknowledgment = false;
   }
 
-  packet::packet(file_util::file_obj& file, bool acknowledgment, unsigned char order_num): acknowledgment(acknowledgment), order_num(order_num){
+  packet::packet(file_util::file_obj& file, bool acknowledgment, 
+  unsigned char order_num): acknowledgment(acknowledgment), order_num(order_num){
 
     //The file remaining is less then 1024 bytes
     if(file.get_rem_size() < 1024){
-      packet_size = file.get_rem_size() + PACKET_CODE_SIZE + ORDER_NUM_SIZE + SIZE_INDICATOR_SIZE;
+      packet_size = file.get_rem_size() + 
+      PACKET_CODE_SIZE + ORDER_NUM_SIZE + SIZE_INDICATOR_SIZE;
 
       packet_code = {'s','r','t'};
 
@@ -32,7 +34,8 @@ namespace packet_system{
 
       packet_contents[4] = front_rem;
       packet_contents[5] = back_rem;
-      file.read_file(packet_contents + PACKET_CODE_SIZE + ORDER_NUM_SIZE + SIZE_INDICATOR_SIZE, file.get_rem_size());
+      file.read_file(packet_contents + PACKET_CODE_SIZE + 
+      ORDER_NUM_SIZE + SIZE_INDICATOR_SIZE, file.get_rem_size());
     }
     //Normal packet
     else{
@@ -69,7 +72,8 @@ namespace packet_system{
     
     const char* c_str_filename = filename.c_str();
     for(int index = PACKET_CODE_SIZE + ORDER_NUM_SIZE; index < packet_size; ++index){
-      packet_contents[index] = c_str_filename[index - (PACKET_CODE_SIZE + ORDER_NUM_SIZE)];
+      packet_contents[index] = 
+      c_str_filename[index - (PACKET_CODE_SIZE + ORDER_NUM_SIZE)];
     }
   }
 
@@ -86,7 +90,8 @@ namespace packet_system{
     if(is_file_req || packet_contents[0] == 'n'){
       return packet_contents + PACKET_CODE_SIZE + ORDER_NUM_SIZE;
     }
-    return packet_contents + PACKET_CODE_SIZE + ORDER_NUM_SIZE + SIZE_INDICATOR_SIZE;
+    return packet_contents + 
+    PACKET_CODE_SIZE + ORDER_NUM_SIZE + SIZE_INDICATOR_SIZE;
   }
 
   void packet::construct_packet(char* data){
@@ -109,7 +114,9 @@ namespace packet_system{
         packet_size = (packet_contents[4] << BITSHIFT) + packet_contents[5];
       }
       else if(packet_contents[0] == 'f'){
-        packet_size = PACKET_CODE_SIZE + ORDER_NUM_SIZE + strlen(packet_contents + PACKET_CODE_SIZE + ORDER_NUM_SIZE) + 1;
+        packet_size = PACKET_CODE_SIZE + 
+        ORDER_NUM_SIZE + strlen(packet_contents + 
+        PACKET_CODE_SIZE + ORDER_NUM_SIZE) + 1;
         is_file_req = true;
       }
 

@@ -13,8 +13,8 @@ namespace file_util{
 
       file_obj();
       /**
-       * The constructor creates a file_obj. The flag determines if the file is written
-       * or read.
+       * The constructor creates a file_obj. The flag determines if the 
+       * file is written or read.
        *
        * Param: filename the name of the file.
        * Param: read sets weather the file is read or write.
