@@ -34,7 +34,8 @@ namespace packet_system{
        * over the server.
        * Param: acknowledgment, sets the flag for this packet.
        **/
-      packet(file_util::file_obj& file, bool acknowledgment, unsigned char order_num);
+      packet(file_util::file_obj& file, bool acknowledgment, 
+      unsigned char order_num);
 
       /**
        * Changes the state of the acknowledgment flag
@@ -67,8 +68,8 @@ namespace packet_system{
       //The contents of the packet, Not including header stuff or the checksum
       char* packet_contents;
 
-      //The size of the packet. Normally this matters in the case of a partial packet. Otherwise its just a 
-      //default packet size. 
+      //The size of the packet. Normally this matters in the case of
+      //a partial packet. Otherwise its just a default packet size. 
       unsigned short packet_size;
 
       char order_num;
@@ -76,9 +77,10 @@ namespace packet_system{
       //The order number for this packet in the sliding window. 
       char window_order_num;
 
-      //A stl array to hold the packet code to indicate what type of packet this packet is.
-      //I use a stl array because I generally think its safer to use and if I have to pass it around later then I won't 
-      //have an issue with passing it.
+      //A stl array to hold the packet code to indicate what type 
+      //of packet this packet is. I use a stl array because I generally
+      //think its safer to use and if I have to pass it around later 
+      //then I won't have an issue with passing it.
       std::array<char, 3> packet_code;
 
       //Indicates weather this packet has been acknowledged.

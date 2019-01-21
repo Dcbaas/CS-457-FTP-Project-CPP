@@ -1,6 +1,8 @@
 #include "ftp_server.h"
 
 namespace ftp{
+  ftp_server::ftp_server(){}
+
   void ftp_server::reset(){
     pack_vector.clear();
   }

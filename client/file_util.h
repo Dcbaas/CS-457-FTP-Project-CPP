@@ -10,14 +10,20 @@
 namespace file_util{
   class file_obj{
     public:
+
+      file_obj();
       /**
-       * The constructor creates a file_obj. The flag determines if the file is written
-       * or read.
+       * The constructor creates a file_obj. The flag determines if the 
+       * file is written or read.
        *
        * Param: filename the name of the file.
        * Param: read sets weather the file is read or write.
        **/
       file_obj(std::string filename, bool read);
+
+      file_obj& operator=(file_obj other);
+
+      void update_objet(std::string filename, bool read);
 
       /**
        * Reads data from the file. By default. 1024 bytes are read
@@ -29,8 +35,6 @@ namespace file_util{
        * default is 1024;
        **/
       void read_file(char* buffer, size_t num_bytes = 1024);
-
-      void write_file(char* buffer, size_t num_bytes = 1024);
 
       /**
        * Gets the size of the file

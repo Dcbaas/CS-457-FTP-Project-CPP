@@ -10,6 +10,8 @@
 namespace file_util{
   class file_obj{
     public:
+
+      file_obj();
       /**
        * The constructor creates a file_obj. The flag determines if the file is written
        * or read.

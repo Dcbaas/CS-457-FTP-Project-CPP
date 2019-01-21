@@ -1,42 +1,35 @@
-#ifndef         FTP_SERVER_H
-#define         FTP_SERVER_H
+#ifndef       FTP_CLIENT_H
+#define       FTP_CLIENT_H
 
 #include "socket.h"
 #include "file_util.h"
 #include "packet.h"
+
 #include <vector>
 #include <iostream>
 
 namespace ftp{
-  class ftp_server{
+  class ftp_client{
     public:
-
-      ftp_server();
+      ftp_client();
       void run();
 
     private:
-      int curr_order_num{0};
+      std::array<std::vector<packet_system::packet>::iterator, 5> window;
       std::vector<packet_system::packet> pack_vector;
       file_util::file_obj file;
       sockets::udp_socket socket;
 
-      std::array<std::vector<packet_system::packet>::iterator, 5> window;
-
-      int offset{0};
+      int offset = 0;
       char current_seq_num{0};
-      
-      void reset();
-      void await_request();
 
-      void setup_transmission_pipline();
-      void transmit_window();
-      void await_ack();
+      void send_request();
+      void get_response();
+      void get_window();
+      void send_ack();
       void update_pipline();
-      bool verify_ack();
 
       constexpr char ORDER_NUM_LIMIT = 10;
-
   };
 }
-
 #endif
