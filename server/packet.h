@@ -36,6 +36,10 @@ namespace packet_system{
        **/
       packet(file_util::file_obj& file, bool acknowledgment, unsigned char order_num);
 
+
+      //A filename packet
+      packet(std::string filename);
+
       /**
        * Changes the state of the acknowledgment flag
        *
@@ -53,7 +57,11 @@ namespace packet_system{
 
       char* get_packet() const;
 
+      char* get_data();
+
       short get_size() const { return packet_size; }
+      
+      bool get_is_file_req() { return is_file_req; };
 
       void construct_packet(char* data);
 
@@ -84,6 +92,8 @@ namespace packet_system{
       //Indicates weather this packet has been acknowledged.
       //Applies to normal packets only.
       bool acknowledgment;
+
+      bool is_file_req{false};
 
       //A private member function to calculate the checksum
       void calculate_checksum();

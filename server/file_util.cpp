@@ -30,6 +30,41 @@ namespace file_util{
     }
   }
 
+  file_obj& file_obj::operator=(file_obj other){
+    std::swap(this->read, other.read);
+    std::swap(this->filename, other.filename);
+    std::swap(this->in_stream, other.in_stream);
+    std::swap(this->out_stream,other.out_stream);
+    std::swap(this->filesize, other.filesize);
+    std::swap(this->remaining_file, other.remaining_file);
+
+    return *this;
+  }
+
+  void file_obj::update_objet(std::string filename, bool read){
+    this->filename = filename;
+    this->read = read;
+    if(read){
+      in_stream.open(filename);
+
+      if(!in_stream){
+        in_stream.close();
+        std::cout << "File failure" << std::endl;
+      }
+
+      determine_file_size();
+      calulate_rem_file();
+    }
+    else{
+      out_stream = std::ofstream(filename);
+
+      if(!out_stream){
+        out_stream.close();
+        std::cout << "File failure" << std::endl << filesize << std::endl;
+      }
+    }
+  }
+
   size_t file_obj::get_filesize() const{
     return filesize;
   }
@@ -38,6 +73,7 @@ namespace file_util{
 
   void  file_obj::read_file(char* buffer, size_t num_bytes){
     in_stream.read(buffer, num_bytes);
+    calulate_rem_file();
   }
 
   file_obj::~file_obj(){

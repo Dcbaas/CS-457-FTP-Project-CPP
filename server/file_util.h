@@ -19,6 +19,10 @@ namespace file_util{
        **/
       file_obj(std::string filename, bool read);
 
+      file_obj& operator=(file_obj other);
+
+      void update_objet(std::string filename, bool read);
+
       /**
        * Reads data from the file. By default. 1024 bytes are read
        * unless specified.

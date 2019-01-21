@@ -1,8 +1,6 @@
 #Server Makefile
 #Author: David Baas
 
-test: file_util.o test.o
-	clang++ file_util.o packet_server.o test.o socket.o 
 
 packet_server.o: packet_server.cpp
 	clang++ -c packet_server.cpp
@@ -15,3 +13,6 @@ test.o: test.cpp
 
 socket.o: socket.cpp
 	clang++ -c socket.cpp
+
+ftp_server.o: ftp_server.cpp
+	clang++ -c ftp_server.cpp
