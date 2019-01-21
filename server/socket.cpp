@@ -4,6 +4,7 @@ namespace sockets{
   udp_socket::udp_socket(){
     if(socket_file_descriptor < 0){
       //Do some exception stuff
+      std::cout << "Failed to make" << std::endl;
     }
     port = 8008;
 
@@ -14,7 +15,7 @@ namespace sockets{
 
     serveraddr.sin_family=AF_INET;
     serveraddr.sin_port=htons(port);
-    serveraddr.sin_addr.s_addr=INADDR_ANY;
+    serveraddr.sin_addr.s_addr=inet_addr("127.0.0.1");
 
     bind(socket_file_descriptor, (struct sockaddr*)&serveraddr,
         sizeof(serveraddr));
