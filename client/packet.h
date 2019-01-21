@@ -37,6 +37,9 @@ namespace packet_system{
       packet(file_util::file_obj& file, bool acknowledgment, 
       unsigned char order_num);
 
+      //A filename packet
+      packet(std::string filename);
+
       /**
        * Changes the state of the acknowledgment flag
        *
@@ -53,6 +56,8 @@ namespace packet_system{
       bool get_acknowledgment() const;
 
       char* get_packet() const;
+
+      char* get_data();
 
       short get_size() const { return packet_size; }
 
@@ -82,6 +87,8 @@ namespace packet_system{
       //think its safer to use and if I have to pass it around later 
       //then I won't have an issue with passing it.
       std::array<char, 3> packet_code;
+
+      bool is_file_req{false};
 
       //Indicates weather this packet has been acknowledged.
       //Applies to normal packets only.

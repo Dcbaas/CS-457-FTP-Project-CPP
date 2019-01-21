@@ -34,7 +34,7 @@ namespace ftp{
       void update_pipline();
       bool verify_ack();
 
-      constexpr char ORDER_NUM_LIMIT = 10;
+      static constexpr char ORDER_NUM_LIMIT = 10;
 
   };
 }

@@ -13,11 +13,12 @@ namespace ftp{
 
       if(!pack_vector.empty() && pack_vector.front().get_is_file_req()){
         setup_transmission_pipline();
-        while(file.get_rem_size() > 0 && !verify_ack()){
+        do{
           transmit_window();
           //await_ack();
           update_pipline();
-        }
+        }while(file.get_rem_size() > 0 && !verify_ack());
+        std::cout << "Send File" << std::endl;
         reset();
       }
     }
@@ -55,6 +56,7 @@ namespace ftp{
   }
 
   void ftp_server::transmit_window(){
+    int count = 0;
     //Transmit all of the packets in sequence 
     //For each packet iterator in the window
     for(auto packet: window){
@@ -63,9 +65,12 @@ namespace ftp{
       if(packet == pack_vector.end()){
         break;
       }
+      std::cout << "Sending " << count << std::endl;
       socket.send_packet(*packet);
       //TODO remove the next line. This line maually sets the acknowledgment to true
       packet->set_acknowledgment(true);
+      std::cout << "Success" << std::endl;
+      ++count;
     }
   }
 

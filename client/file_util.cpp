@@ -88,6 +88,10 @@ namespace file_util{
     }
   }
 
+  void file_obj::write_file(char* buffer, size_t num_bytes){
+    out_stream.write(buffer, num_bytes);
+  }
+
   void file_obj::determine_file_size(){
     struct stat file_stat;
     stat(filename.c_str(), &file_stat);

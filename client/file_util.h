@@ -36,6 +36,8 @@ namespace file_util{
        **/
       void read_file(char* buffer, size_t num_bytes = 1024);
 
+      void write_file(char*buffer, size_t num_bytes = 1024);
+
       /**
        * Gets the size of the file
        *

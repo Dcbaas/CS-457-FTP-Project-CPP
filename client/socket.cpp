@@ -23,14 +23,15 @@ namespace sockets{
   void udp_socket::send_packet(packet_system::packet& send_packet){
     sendto(socket_file_descriptor, send_packet.get_packet(), send_packet.get_size(),
         0, (struct sockaddr*)&serveraddr, sizeof(serveraddr));
+    std::cout << "Sent" << std::endl;
   }
 
   int udp_socket::receive_packet(packet_system::packet& recv_packet){
     char* buffer = new char[1030];
-    socklen_t len = sizeof(clientaddr);
+    socklen_t len = sizeof(serveraddr);
 
     int success = recvfrom(socket_file_descriptor, buffer, 1030, 0, 
-    (sockaddr*)&clientaddr, &len);
+    (sockaddr*)&serveraddr, &len);
     if(success != -1){
       recv_packet.construct_packet(buffer);
     }

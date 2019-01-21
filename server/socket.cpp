@@ -7,7 +7,7 @@ namespace sockets{
     }
     port = 8008;
 
-    timeout.tv_sec=5;
+    timeout.tv_sec=50;
     timeout.tv_usec=0;
     setsockopt(socket_file_descriptor, SOL_SOCKET,
         SO_RCVTIMEO,&timeout,sizeof(timeout));
@@ -22,7 +22,7 @@ namespace sockets{
 
   void udp_socket::send_packet(packet_system::packet& send_packet){
     sendto(socket_file_descriptor, send_packet.get_packet(), send_packet.get_size(),
-        0, (struct sockaddr*)&serveraddr, sizeof(serveraddr));
+        0, (struct sockaddr*)&clientaddr, sizeof(clientaddr));
   }
 
   int udp_socket::receive_packet(packet_system::packet& recv_packet){
