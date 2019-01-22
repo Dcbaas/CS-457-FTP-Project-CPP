@@ -4,7 +4,7 @@
 
 namespace packet_system{
   packet::packet(){
-    data = new char[1024];
+    data = nullptr;
     data_size = 0;
     order_num = 0;
     code = 0;
@@ -12,20 +12,20 @@ namespace packet_system{
     acknowledgment = false;
   }
 
-  packet::packet(file_util::file_obj& file, bool acknowledgment, 
-  unsigned char order_num): acknowledgment(acknowledgment), order_num(order_num){
-    data_size = (file.get_rem_size() < 1024)? file.get_rem_size() : 1024;
-    data = new char[1024];
-    file.read_file(data, data_size);
-    //d for data.
-    code = 'd';
-    if(data_size < 1024){
-      footer = 't';
-    }
-    else{
-      footer = 'p';
-    }
-  }
+  // packet::packet(file_util::file_obj& file, bool acknowledgment, 
+  // unsigned char order_num): acknowledgment(acknowledgment), order_num(order_num){
+  //   data_size = (file.get_rem_size() < 1024)? file.get_rem_size() : 1024;
+  //   data = new char[1024];
+  //   file.read_file(data, data_size);
+  //   //d for data.
+  //   code = 'd';
+  //   if(data_size < 1024){
+  //     footer = 't';
+  //   }
+  //   else{
+  //     footer = 'p';
+  //   }
+  // }
 
   packet::packet(std::string filename){
     data_size = filename.length() + 1; //length + null cahr at end.
@@ -70,6 +70,7 @@ namespace packet_system{
 
   void packet::assemble_sent_packet(char* packet){
     //get header
+    data = new char[1029];
     code = packet[0];
     order_num = packet[2] - ORDER_CHAR_OFFSET;
     //get footer
@@ -91,6 +92,7 @@ namespace packet_system{
   }
 
   packet::~packet(){
+    
     delete[] data;
   }
 

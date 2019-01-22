@@ -6,7 +6,7 @@ namespace sockets{
       //Do some exception stuff
     }
 
-    timeout.tv_sec=3;
+    timeout.tv_sec= 1;
     timeout.tv_usec=0;
     setsockopt(socket_file_descriptor, SOL_SOCKET,
         SO_RCVTIMEO,&timeout,sizeof(timeout));
@@ -23,8 +23,8 @@ namespace sockets{
   void udp_socket::send_packet(packet_system::packet& send_packet){
     char* packet = new char[1029];
     send_packet.construct_packet(packet);
-    sendto(socket_file_descriptor,packet, packet_system::packet::PACKET_SIZE, 
-        0, (struct sockaddr*)&clientaddr, sizeof(clientaddr));
+    sendto(socket_file_descriptor,packet, 1029, 
+        0, (struct sockaddr*)&serveraddr, sizeof(serveraddr));
 
     delete[] packet;
   }
