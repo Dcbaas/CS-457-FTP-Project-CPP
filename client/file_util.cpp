@@ -59,7 +59,7 @@ namespace file_util{
       calulate_rem_file();
     }
     else{
-      out_stream = std::ofstream(filename);
+      out_stream.open(filename);
 
       if(!out_stream){
         out_stream.close();

@@ -15,12 +15,8 @@ namespace packet_system{
 
       /**
        * This constructor creates an acknowledgement packet.
-       * It consist of a four chars that represent 'a' 'c' 'k' and 
-       * number of the packet acknowleged
-       *
-       * Param: ack_packet the number of the packet being acknowledged 
        **/
-      packet(unsigned char ack_packet);
+      packet(char acknowleged);
 
       /**
        * This counstructor creates a regular packet that is used to 
@@ -41,30 +37,32 @@ namespace packet_system{
       //A filename packet
       packet(std::string filename);
 
+      void construct_packet(char* packet);
+
+      void assemble_sent_packet(char* packet);
+
       /**
        * Changes the state of the acknowledgment flag
        *
        * Param: acknowledgment the state this packet
        * is being set to.
        **/
-      void set_acknowledgment(bool acknowledgment);
+      void set_acknowledgment(bool acknowledgment){ this->acknowledgment
+       = acknowledgment; };
 
       /**
        * Get th value of the acknowledgment packet.
        *
        * Returns: The value of this acknowledgment.
        **/
-      bool get_acknowledgment() const;
+      bool get_acknowledgment() const { return acknowledgment; };
 
-      char* get_packet() const;
+      short get_data_size() const { return data_size; };
 
-      char* get_data();
+      char* get_data() { return data; }
 
-      short get_size() const { return packet_size; }
-      
-      bool get_is_file_req() { return is_file_req; };
-
-      void construct_packet(char* data);
+      bool is_file() const { return file_req; };
+      bool is_partial() { return data_size < MAX_DATA_SIZE; }
 
       /**
        * Destroys the packet. Specifically the 
@@ -72,42 +70,32 @@ namespace packet_system{
        **/
       ~packet();
 
+      //1024 + 2header + 2null33 + 1footer.
+      static constexpr short PACKET_SIZE = 1029;
+
     private:
       //The contents of the packet, Not including header stuff or the checksum
-      char* packet_contents;
+      char* data;
 
       //The size of the packet. Normally this matters in the case of a 
       //partial packet. Otherwise its just a default packet size. 
-      unsigned short packet_size;
-
+      unsigned short data_size;
       char order_num;
-
-      //The order number for this packet in the sliding window. 
-      char window_order_num;
-
-      //A stl array to hold the packet code to indicate what type of 
-      //packet this packet is. I use a stl array because I generally 
-      //think its safer to use and if I have to pass it around later 
-      //then I won't have an issue with passing it.
-      std::array<char, 3> packet_code;
+      char code;
+      char footer;
 
       //Indicates weather this packet has been acknowledged.
       //Applies to normal packets only.
       bool acknowledgment;
 
-      bool is_file_req{false};
+      bool file_req{false};
 
-      //A private member function to calculate the checksum
-      void calculate_checksum();
 
-      static constexpr short MAX_CONTENT_SIZE = 1024;
-      static constexpr char PACKET_CODE_SIZE = 3;
-      static constexpr char CHECK_SUM_SIZE = 2;
+      static constexpr short MAX_DATA_SIZE = 1024;
+      static constexpr char PACKET_CODE_SIZE = 1;
       static constexpr char ORDER_NUM_SIZE = 1;
-      static constexpr char SIZE_INDICATOR_SIZE = 2;
-      static constexpr size_t FRONT_MASK = 0xFF00;
-      static constexpr size_t BACK_MASK = 0x00FF;
-      static constexpr char BITSHIFT = 8;
+      static constexpr char ORDER_CHAR_OFFSET = 48;
+      static constexpr char HEADER_OFFSET = 2;
   };
 }
 

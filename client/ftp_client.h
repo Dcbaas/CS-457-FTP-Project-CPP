@@ -15,7 +15,10 @@ namespace ftp{
       void run();
 
     private:
-      std::array<std::vector<packet_system::packet>::iterator, 5> window;
+      std::vector<packet_system::packet>::iterator win_start;
+      std::vector<packet_system::packet>::iterator win_end;
+      char win_size{5};
+
       std::vector<packet_system::packet> pack_vector;
       file_util::file_obj file;
       sockets::udp_socket socket{8008};

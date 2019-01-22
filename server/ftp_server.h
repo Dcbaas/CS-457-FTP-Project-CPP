@@ -21,6 +21,11 @@ namespace ftp{
       sockets::udp_socket socket;
 
       std::array<std::vector<packet_system::packet>::iterator, 5> window;
+      std::vector<packet_system::packet>::iterator win_start;
+      std::vector<packet_system::packet>::iterator win_end;
+      char win_size{5};
+      
+      bool at_end{false};
 
       int offset{0};
       char current_seq_num{0};

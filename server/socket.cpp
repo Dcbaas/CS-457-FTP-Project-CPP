@@ -22,12 +22,14 @@ namespace sockets{
   }
 
   void udp_socket::send_packet(packet_system::packet& send_packet){
-    sendto(socket_file_descriptor, send_packet.get_packet(), send_packet.get_size(),
+    char* packet = new char[1029];
+    send_packet.construct_packet(packet);
+    sendto(socket_file_descriptor,packet, packet_system::packet::PACKET_SIZE, 
         0, (struct sockaddr*)&clientaddr, sizeof(clientaddr));
   }
 
   int udp_socket::receive_packet(packet_system::packet& recv_packet){
-    char* buffer = new char[1030];
+    char* buffer = new char[1029];
     socklen_t len = sizeof(clientaddr);
 
     int success = recvfrom(socket_file_descriptor, buffer, 1030, 0, (sockaddr*)&clientaddr, &len);

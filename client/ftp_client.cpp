@@ -5,26 +5,35 @@ namespace ftp{
 
   void ftp_client::run(){
     setup_client();
+    std::cout << "ding" <<std::endl;
     send_request();
-    //TODO: wait for a packet that says this file exist then do the rest
-    while(!end){
-      //rename to get transmission
-      get_transmission();
-      send_ack();
-      if(!end){
-        update_pipline();
-      }
-    }
+    // //TODO: wait for a packet that says this file exist then do the rest
+    // while(end == false){
+    //   //rename to get transmission
+    //   get_transmission();
+    //   consolidate_transmission();
+    //   send_ack();
+    //   if(end == false){
+    //     update_pipline();
+    //   }
+    // }
+    // file.~file_obj();
+    std::cout << "end" <<std::endl;
+    return;
     //Reset when done.
   }
 
   void ftp_client::send_request(){
     std::cout << "What file do you want?: ";
 
-    std::string filename;
-    std::cin >> filename;
+    std::string filename{"test.txt"};
+    // std::cin >> filename;
+    // std::cout << "Writing packet" << std::endl;
     packet_system::packet file_req{filename};
+    // std::cout << "Wrote packet" << std::endl;
+    file.update_objet(filename, false);
     socket.send_packet(file_req);
+    std::cout << "Sent packet" << std::endl;
   }
 
   void ftp_client::get_response(){
@@ -36,28 +45,35 @@ namespace ftp{
       pack_vector.push_back(packet_system::packet());
     }
 
-    //Setup the window
-    for(int win_element = 0; win_element < 5; ++win_element){
-      window[win_element] = pack_vector.begin() + win_element;
-    }
+    win_start = pack_vector.begin();
+    win_end = pack_vector.end();
+
+    std::cout << "Setup Client" << std::endl;
   }
 
   void ftp_client::get_transmission(){
-    for(auto packet: window){
-      socket.receive_packet(*packet);
+    std::cout << "pre transmission" << std::endl;
+    for(auto win_it = win_start; win_it < win_end; ++win_it){
+      std::cout << "waiting" <<std::endl;
+      socket.receive_packet(*win_it);
     }
+    std::cout << "Got Transmission" << std::endl;
   }
 
   //Sort the window and write it to file.
   void ftp_client::consolidate_transmission(){
-    for(auto packet: window){
-      if(packet->get_size() > 0){
-        file.write_file(packet->get_data());
-        if(packet->get_packet()[0] == 's'){
-          //End equals true;
-          return;
-        }
+
+    for(auto win_it = win_start; win_it < win_end; ++win_it){
+      
+      std::cout << "writing" <<std::endl;
+      // file.write_file(win_it->get_data());
+      if(win_it->is_partial()){
+        //End equals true;
+        //Return
+        end = true;
+        return;
       }
+      
     }
 
   }
@@ -66,14 +82,15 @@ namespace ftp{
   }
 
   void ftp_client::update_pipline(){
-    for(auto packet: window){
-      if(packet->get_acknowledgment()){
-        ++offset;
-      }
-      else{
-        break;
-      }
-    }
+    int offset = 5;
+    // for(auto packet: window){
+    //   if(packet->get_acknowledgment()){
+    //     ++offset;
+    //   }
+    //   else{
+    //     break;
+    //   }
+    // }
 
     //Load more data in
     for(int packet = 0; packet < offset; ++packet){
@@ -81,10 +98,8 @@ namespace ftp{
     }
 
     //Shift the window. If one of them reaches the end iterator than stop
-    for(auto packet: window){
-      packet = packet + offset;
-      //if we hit the end, stop shifting iterators this is the stopping point.
-    }
+    win_start += 5;
+    win_end += 5;
   }
 
 }

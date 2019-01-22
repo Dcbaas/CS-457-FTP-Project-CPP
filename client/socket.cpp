@@ -6,7 +6,7 @@ namespace sockets{
       //Do some exception stuff
     }
 
-    timeout.tv_sec=60;
+    timeout.tv_sec=3;
     timeout.tv_usec=0;
     setsockopt(socket_file_descriptor, SOL_SOCKET,
         SO_RCVTIMEO,&timeout,sizeof(timeout));
@@ -21,13 +21,16 @@ namespace sockets{
   }
 
   void udp_socket::send_packet(packet_system::packet& send_packet){
-    sendto(socket_file_descriptor, send_packet.get_packet(), send_packet.get_size(),
-        0, (struct sockaddr*)&serveraddr, sizeof(serveraddr));
-    std::cout << "Sent" << std::endl;
+    char* packet = new char[1029];
+    send_packet.construct_packet(packet);
+    sendto(socket_file_descriptor,packet, packet_system::packet::PACKET_SIZE, 
+        0, (struct sockaddr*)&clientaddr, sizeof(clientaddr));
+
+    delete[] packet;
   }
 
   int udp_socket::receive_packet(packet_system::packet& recv_packet){
-    char* buffer = new char[1030];
+    char* buffer = new char[1029];
     socklen_t len = sizeof(serveraddr);
 
     int success = recvfrom(socket_file_descriptor, buffer, 1030, 0, 
@@ -35,11 +38,8 @@ namespace sockets{
     if(success != -1){
       recv_packet.construct_packet(buffer);
     }
-
-
-
+    delete[] buffer;
     return success;
-    
   }
 
   udp_socket::~udp_socket(){
