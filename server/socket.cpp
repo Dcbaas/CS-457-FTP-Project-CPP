@@ -34,7 +34,8 @@ namespace sockets{
 
     int success = recvfrom(socket_file_descriptor, buffer, 1030, 0, (sockaddr*)&clientaddr, &len);
     if(success != -1){
-      recv_packet.construct_packet(buffer);
+      std::cout << "Ding" << std::endl;
+      recv_packet.assemble_sent_packet(buffer);
     }
 
     return success;

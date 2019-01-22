@@ -10,7 +10,12 @@ namespace ftp{
   void ftp_server::run(){
     while(true){
       await_request();
-
+      if(pack_vector.front().is_file()){
+        std::cout << "was file" << std::endl;
+      }
+      else{
+        std::cout << "wasn't file" << std::endl;
+      }
       if(!pack_vector.empty() && pack_vector.front().is_file()){
         setup_transmission_pipline();
         do{
@@ -18,7 +23,7 @@ namespace ftp{
           //await_ack();
           update_pipline();
         }while(file.get_rem_size() > 0 && win_size >=5);
-        std::cout << "Send File" << std::endl;
+        std::cout << "Sent File" << std::endl;
         reset();
       }
     }
@@ -62,6 +67,7 @@ namespace ftp{
   }
 
   void ftp_server::transmit_window(){
+    std::cout<< "Transmitting" <<std::endl;
     for(auto win_it = win_start; win_it < win_end; ++win_it){
       socket.send_packet(*win_it);
     }

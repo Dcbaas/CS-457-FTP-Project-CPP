@@ -5,7 +5,7 @@ all: packet.o file_util.o socket.o ftp_server.o main.o
 	clang++ main.o packet.o file_util.o socket.o ftp_server.o -o server
 
 debug:
-	clang++ -g main.cpp packet_server.cpp file_util.cpp socket.cpp ftp_server.cpp -o server
+	clang++ -g main.cpp packet.cpp file_util.cpp socket.cpp ftp_server.cpp -o server
 
 packet.o: packet.cpp
 	clang++ -c packet.cpp

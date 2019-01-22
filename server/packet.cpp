@@ -74,6 +74,10 @@ namespace packet_system{
     order_num = packet[2] - ORDER_CHAR_OFFSET;
     //get footer
     footer = packet[1028];
+    std::cout << footer <<std::endl;
+    if(code == 'f'){
+      file_req = true;
+    }
 
     data_size = (footer == 'p') ? 1024 : 0; 
 
