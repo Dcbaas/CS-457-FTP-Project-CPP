@@ -1,0 +1,17 @@
+34c34
+<       unsigned char order_num);
+---
+>       int order_num);
+65d64
+< 
+67a67,71
+>       void print_data();
+> 
+>       //Can't use the destructor for some reason.
+>       void delete_data();
+> 
+84c88,89
+<       char order_num;
+---
+> 
+>       int order_num;

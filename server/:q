@@ -1,0 +1,10 @@
+#include "packet.h"
+#include <string.h>
+#include <string>
+
+namespace packet_system{
+
+    packet::packet(char acknowleged){
+      
+    }
+}

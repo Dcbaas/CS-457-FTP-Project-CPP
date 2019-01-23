@@ -43,7 +43,8 @@ namespace ftp{
     //if file is not open don't do stuff. 
 
     //Clear the pack_vector 
-    pack_vector.clear();
+    std::cout << "Got to 46" << std::endl;
+    // pack_vector.clear();
     curr_order_num = 0;
 
     //Load 5 packets
@@ -51,6 +52,7 @@ namespace ftp{
     // pack_vector.push_back(packet_system::packet(file, false, (curr_order_num+1) % 10));
     // packet_system::packet test{file, false, 1};
     
+    std::cout << "got to 56" << std::endl;
     for(int packet = 0 ; packet < 1 && file.get_rem_size() > 0; ++packet){
       packet_system::packet test{file, false, 1};
       test.print_data();

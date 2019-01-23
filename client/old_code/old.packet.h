@@ -3,7 +3,7 @@
 
 #include "file_util.h"
 
-#include <vector>
+#include <array>
 
 namespace packet_system{
   class packet{
@@ -16,7 +16,7 @@ namespace packet_system{
       /**
        * This constructor creates an acknowledgement packet.
        **/
-      packet(int acknowleged);
+      packet(char acknowleged);
 
       /**
        * This counstructor creates a regular packet that is used to 
@@ -59,28 +59,38 @@ namespace packet_system{
 
       short get_data_size() const { return data_size; };
 
-//      char* get_data() { return data; }
+      char* get_data() { return data; }
 
       bool is_file() const { return file_req; };
+
       bool is_partial() { return data_size < MAX_DATA_SIZE; }
 
-      void print_data();
+      /**
+       * Destroys the packet. Specifically the 
+       * packet_contents. 
+       **/
+      ~packet();
 
       //1024 + 2header + 2null33 + 1footer.
       static constexpr short PACKET_SIZE = 1029;
 
     private:
       //The contents of the packet, Not including header stuff or the checksum
-      std::vector<char> data;
+      char* data;
 
       //The size of the packet. Normally this matters in the case of a 
       //partial packet. Otherwise its just a default packet size. 
       unsigned short data_size;
-      int order_num{0};
-      char code{0};
-      char footer{0};
-      bool acknowledgment{false};
+      int order_num;
+      char code;
+      char footer;
+
+      //Indicates weather this packet has been acknowledged.
+      //Applies to normal packets only.
+      bool acknowledgment;
+
       bool file_req{false};
+
 
       static constexpr short MAX_DATA_SIZE = 1024;
       static constexpr char PACKET_CODE_SIZE = 1;
