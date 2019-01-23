@@ -78,15 +78,20 @@ namespace packet_system{
 
     data_size = (footer == 'p') ? 1024 : 0; 
 
-    //read the data
-    for(int i = HEADER_OFFSET; i < MAX_DATA_SIZE + HEADER_OFFSET; ++i){
-      data[i - HEADER_OFFSET] = packet[i];
-      //Found the end of the file
-      if(packet[i] == 0 && packet[i + 1] == 33 && footer == 't'){
-        data_size = i;
-        break;
-      }
-    }
+    // //read the data
+    // for(int i = HEADER_OFFSET; i < MAX_DATA_SIZE + HEADER_OFFSET; ++i){
+    //   data[i - HEADER_OFFSET] = packet[i];
+    //   //Found the end of the file
+    //   if(packet[i] == 0 && packet[i + 1] == 33 && footer == 't'){
+    //     data_size = i;
+    //     break;
+    //   }
+    // }
+
+    memcpy(data, packet + HEADER_OFFSET, MAX_DATA_SIZE);
+    // for(int i = 0 i < MAX_DATA_SIZE; ++i){
+    //   if(data[i])
+    // }
 
     acknowledgment = true;
   }

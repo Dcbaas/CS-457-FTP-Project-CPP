@@ -20,7 +20,7 @@ namespace ftp{
       file_util::file_obj file;
       sockets::udp_socket socket;
 
-      std::array<std::vector<packet_system::packet>::iterator, 5> window;
+      //std::array<std::vector<packet_system::packet>::iterator, 5> window;
       std::vector<packet_system::packet>::iterator win_start;
       std::vector<packet_system::packet>::iterator win_end;
       char win_size{5};

@@ -37,6 +37,12 @@ namespace packet_system{
       //A filename packet
       packet(std::string filename);
 
+//      packet(packet& other);
+      
+//      packet(packet&& other);
+
+ //     packet& operator=(packet other);
+
       void construct_packet(char* packet);
 
       void assemble_sent_packet(char* packet);
@@ -64,6 +70,11 @@ namespace packet_system{
       bool is_file() const { return file_req; };
       bool is_partial() { return data_size < MAX_DATA_SIZE; }
 
+      void print_data();
+
+      //Can't use the destructor for some reason.
+      void delete_data();
+
       /**
        * Destroys the packet. Specifically the 
        * packet_contents. 
@@ -80,7 +91,7 @@ namespace packet_system{
       //The size of the packet. Normally this matters in the case of a 
       //partial packet. Otherwise its just a default packet size. 
       unsigned short data_size;
-      char order_num;
+      int order_num;
       char code;
       char footer;
 

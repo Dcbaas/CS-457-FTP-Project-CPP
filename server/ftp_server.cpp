@@ -4,18 +4,16 @@ namespace ftp{
   ftp_server::ftp_server(){}
 
   void ftp_server::reset(){
+    for(auto packet: pack_vector){
+//      packet.delete_data();
+    }
     pack_vector.clear();
   }
 
   void ftp_server::run(){
     while(true){
       await_request();
-      if(pack_vector.front().is_file()){
-        std::cout << "was file" << std::endl;
-      }
-      else{
-        std::cout << "wasn't file" << std::endl;
-      }
+     
       if(!pack_vector.empty() && pack_vector.front().is_file()){
         setup_transmission_pipline();
         do{
@@ -50,10 +48,17 @@ namespace ftp{
 
     //Load 5 packets
     //for 5 packets or until the file ends.
+    // pack_vector.push_back(packet_system::packet(file, false, (curr_order_num+1) % 10));
+    // packet_system::packet test{file, false, 1};
     
-    for(int packet = 0 ; packet < 5 && file.get_rem_size() > 0; ++packet){
-      pack_vector.push_back(packet_system::packet(file, false, curr_order_num++));
+    for(int packet = 0 ; packet < 1 && file.get_rem_size() > 0; ++packet){
+      packet_system::packet test{file, false, 1};
+      test.print_data();
+      std::cout << "Putting into Vector" << std::endl;
+      pack_vector.push_back(test);
     }
+
+    pack_vector.front().print_data();
 
     win_start = pack_vector.begin();
 
