@@ -1,81 +1,104 @@
 #include "packet.h"
+#include <string.h>
+#include <string>
 
 namespace packet_system{
-
   packet::packet(){
-    packet_contents = nullptr;
-    packet_size = 0;
+    data = nullptr;
+    data_size = 0;
     order_num = 0;
+    code = 0;
+    footer = 0;
     acknowledgment = false;
   }
 
-  void packet::set_acknowledgment(bool acknowledgment){
-    this->acknowledgment = acknowledgment;
-  }
+  // packet::packet(file_util::file_obj& file, bool acknowledgment, 
+  // unsigned char order_num): acknowledgment(acknowledgment), order_num(order_num){
+  //   data_size = (file.get_rem_size() < 1024)? file.get_rem_size() : 1024;
+  //   data = new char[1024];
+  //   file.read_file(data, data_size);
+  //   //d for data.
+  //   code = 'd';
+  //   if(data_size < 1024){
+  //     footer = 't';
+  //   }
+  //   else{
+  //     footer = 'p';
+  //   }
+  // }
 
   packet::packet(std::string filename){
-    packet_size = PACKET_CODE_SIZE + ORDER_NUM_SIZE + filename.length() + 1;
-    packet_contents = new char[packet_size];
+    data_size = filename.length() + 1; //length + null cahr at end.
+    data = new char[1024];
+    const char* temp_c_str = filename.c_str();
 
-    packet_code = {'f', 'i', 'l'};
-
-    //Load the Code 
-    for(int index = 0; index < PACKET_CODE_SIZE; ++index){
-      packet_contents[index] = packet_code[index];
+    for(int i = 0; i < data_size; ++i){
+      data[i] = temp_c_str[i];
     }
 
-    packet_contents[3] = 0;
+    file_req = true;
 
-    const char* c_str_filename = filename.c_str();
-    for(int index = PACKET_CODE_SIZE + ORDER_NUM_SIZE; index < packet_size; ++index){
-      packet_contents[index] = 
-        c_str_filename[index - (PACKET_CODE_SIZE + ORDER_NUM_SIZE)];
-    }
+    acknowledgment = false;
 
-    is_file_req = true;
+    code = 'f';
+    order_num = 0;
+    footer = 't';
   }
 
-  bool packet::get_acknowledgment() const{ return acknowledgment; }
 
-  char* packet::get_packet() const{ return packet_contents; }
 
-  char* packet::get_data(){
-    if(is_file_req || packet_contents[0] == 'n'){
-      return packet_contents + PACKET_CODE_SIZE + ORDER_NUM_SIZE;
+  //Send an already allocated packet
+  void packet::construct_packet(char* packet){
+    packet[0] = code;
+    //Send the literal char value of the order num.
+    packet[1] = order_num + ORDER_CHAR_OFFSET;
+    for(int i = HEADER_OFFSET; i < MAX_DATA_SIZE + HEADER_OFFSET; ++i){
+      if(i - HEADER_OFFSET < data_size){
+        packet[i] = data[i - HEADER_OFFSET];
+      }
+      else if( i - HEADER_OFFSET == data_size){
+        packet[i] = 0;
+      }    
+      else if(i -HEADER_OFFSET == data_size + 1){
+        packet[i] = 33;
+      }
+
     }
-    return packet_contents + 
-      PACKET_CODE_SIZE + ORDER_NUM_SIZE + SIZE_INDICATOR_SIZE;
+    //Apend the end with footer
+      packet[1028] = footer;
   }
 
-  void packet::construct_packet(char* data){
-    this->packet_contents = data;
+  void packet::assemble_sent_packet(char* packet){
+    //get header
+    data = new char[1029];
+    code = packet[0];
+    order_num = packet[2] - ORDER_CHAR_OFFSET;
+    //get footer
+    footer = packet[1028];
 
-    //Extract the header
-    for(int index = 0; index < PACKET_CODE_SIZE + ORDER_NUM_SIZE; ++index){
-      if(index < 3){
-        packet_code[index] = packet_contents[index];
-      }
-      else{
-        order_num = packet_contents[index];
-      }
-      //Check for partial packet
-      if(packet_contents[0] == 'n'){
-        packet_size = MAX_CONTENT_SIZE + PACKET_CODE_SIZE + ORDER_NUM_SIZE;
+    data_size = (footer == 'p') ? 1024 : 0; 
 
-      }
-      else if( packet_contents[0] == 's'){
-        packet_size = (packet_contents[4] << BITSHIFT) + packet_contents[5];
-      }
-      else if(packet_contents[0] == 'a'){
-        //Do something
-      }
+    // //read the data
+    // for(int i = HEADER_OFFSET; i < MAX_DATA_SIZE + HEADER_OFFSET; ++i){
+    //   data[i - HEADER_OFFSET] = packet[i];
+    //   //Found the end of the file
+    //   if(packet[i] == 0 && packet[i + 1] == 33 && footer == 't'){
+    //     data_size = i;
+    //     break;
+    //   }
+    // }
 
-      acknowledgment = true;
-    }
+    memcpy(data, packet + HEADER_OFFSET, MAX_DATA_SIZE);
+    // for(int i = 0 i < MAX_DATA_SIZE; ++i){
+    //   if(data[i])
+    // }
+
+    acknowledgment = true;
   }
 
   packet::~packet(){
-    delete[] packet_contents;
+    
+    delete[] data;
   }
 
 }  //namespace packet_system

@@ -4,21 +4,24 @@ namespace ftp{
   ftp_server::ftp_server(){}
 
   void ftp_server::reset(){
+    for(auto packet: pack_vector){
+//      packet.delete_data();
+    }
     pack_vector.clear();
   }
 
   void ftp_server::run(){
     while(true){
       await_request();
-
-      if(!pack_vector.empty() && pack_vector.front().get_is_file_req()){
+     
+      if(!pack_vector.empty() && pack_vector.front().is_file()){
         setup_transmission_pipline();
         do{
           transmit_window();
           //await_ack();
           update_pipline();
-        }while(file.get_rem_size() > 0 && !verify_ack());
-        std::cout << "Send File" << std::endl;
+        }while(file.get_rem_size() > 0 && win_size >=5);
+        std::cout << "Sent File" << std::endl;
         reset();
       }
     }
@@ -37,40 +40,41 @@ namespace ftp{
 
     file.update_objet(filename, true);
 
+    //if file is not open don't do stuff. 
+
     //Clear the pack_vector 
     pack_vector.clear();
     curr_order_num = 0;
 
     //Load 5 packets
     //for 5 packets or until the file ends.
-    int packet = 0;
-    for(packet ; packet < 5 && file.get_rem_size() > 0; ++packet){
-      pack_vector.push_back(packet_system::packet(file, false, curr_order_num++));
+    // pack_vector.push_back(packet_system::packet(file, false, (curr_order_num+1) % 10));
+    // packet_system::packet test{file, false, 1};
+    
+    for(int packet = 0 ; packet < 1 && file.get_rem_size() > 0; ++packet){
+      packet_system::packet test{file, false, 1};
+      test.print_data();
+      std::cout << "Putting into Vector" << std::endl;
+      pack_vector.push_back(test);
     }
 
-    //Assign the window
-    for(int win_element = 0; win_element < packet; ++win_element){
-      window[win_element] = pack_vector.begin() + win_element;
-    }
+    pack_vector.front().print_data();
 
+    win_start = pack_vector.begin();
+
+    for(int i = 0; i <= 5; ++i){
+      if(win_end == pack_vector.end()){
+        win_size = i + 1;
+        break;
+      }
+      win_end = win_start + i;
+    }
   }
 
   void ftp_server::transmit_window(){
-    int count = 0;
-    //Transmit all of the packets in sequence 
-    //For each packet iterator in the window
-    for(auto packet: window){
-      //If we are at the end of the vector
-      //Stop transmitting stuff.
-      if(packet == pack_vector.end()){
-        break;
-      }
-      std::cout << "Sending " << count << std::endl;
-      socket.send_packet(*packet);
-      //TODO remove the next line. This line maually sets the acknowledgment to true
-      packet->set_acknowledgment(true);
-      std::cout << "Success" << std::endl;
-      ++count;
+    std::cout<< "Transmitting" <<std::endl;
+    for(auto win_it = win_start; win_it < win_end; ++win_it){
+      socket.send_packet(*win_it);
     }
   }
 
@@ -85,12 +89,9 @@ namespace ftp{
     //Check for all acknowledged packets until one is found 
     //not to be acknowledged. This determines the offset to go to 
     //for the next transmission.
-    for(auto packet: window){
-      if(packet->get_acknowledgment()){
+    for(auto win_it = win_start; win_it < win_end; ++win_it){
+      if(win_it->get_acknowledgment()){
         ++offset;
-      }
-      else{
-        break;
       }
     }
 
@@ -99,23 +100,15 @@ namespace ftp{
       pack_vector.push_back(packet_system::packet(file, false, curr_order_num++));
     }
 
-    //Shift the window. If one of them reaches the end iterator than stop
-    for(auto packet: window){
-      packet = packet + offset;
-      //if we hit the end, stop shifting iterators this is the stopping point.
-      if(packet == pack_vector.end()){
+    win_start += offset;
+
+    for(int i = 0; i <= offset; ++i){
+      if(win_end == pack_vector.end()){
+        win_size = i + 1;
         break;
       }
+      win_end = win_start + i;
     }
-  }
-
-  bool ftp_server::verify_ack(){
-    for(auto packet : pack_vector){
-      if(!packet.get_acknowledgment()){
-        return false;
-      }
-    }
-    return true;
   }
 }
 

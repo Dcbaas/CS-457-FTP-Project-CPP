@@ -23,7 +23,11 @@ namespace file_util{
 
       file_obj& operator=(file_obj other);
 
-      void update_objet(std::string filename, bool read);
+      // void update_objet(std::string filename, bool read);
+
+      void start_file(std::string filename);
+
+      void end_file(){ out_stream.close(); }
 
       /**
        * Reads data from the file. By default. 1024 bytes are read
@@ -34,7 +38,7 @@ namespace file_util{
        * Param: num_bytes The number of bytes being read from the file
        * default is 1024;
        **/
-      void read_file(char* buffer, size_t num_bytes = 1024);
+      // void read_file(char* buffer, size_t num_bytes = 1024);
 
       void write_file(char*buffer, size_t num_bytes = 1024);
 
@@ -43,15 +47,15 @@ namespace file_util{
        *
        * Return: Size of the file.
        **/
-      size_t get_filesize() const;
+      // size_t get_filesize() const;
 
-      /**
-       * Gets how much is remaining in the filestream if the file is 
-       * being read. 
-       *
-       * Returns: Size of file remaining.
-       **/
-      size_t get_rem_size() const;
+      // /**
+      //  * Gets how much is remaining in the filestream if the file is 
+      //  * being read. 
+      //  *
+      //  * Returns: Size of file remaining.
+      //  **/
+      // size_t get_rem_size() const;
 
       /**
        * Handles closing the file streams after the object is destroyed
@@ -59,29 +63,29 @@ namespace file_util{
       ~file_obj();
     private:
       //A bool to set read or write only
-      bool read;
+      // bool read;
       //The name of the file
-      std::string filename;
+      // std::string filename;
 
       //The instream if the file is read only
-      std::ifstream in_stream;
+      // std::ifstream in_stream;
 
       //The outstream if the file is write only
       std::ofstream out_stream;
 
-      //The size of the file
-      size_t filesize;
+      // //The size of the file
+      // size_t filesize;
 
-      //The size of the remaining file in readmode;
-      size_t remaining_file;
+      // //The size of the remaining file in readmode;
+      // size_t remaining_file;
 
-      //Function to determine the size of the file.
-      //Called in constructor.
-      void determine_file_size();
+      // //Function to determine the size of the file.
+      // //Called in constructor.
+      // void determine_file_size();
 
-      //Function to determine how much of the file remains
-      //Called in every read call and constructor.
-      void calulate_rem_file();
+      // //Function to determine how much of the file remains
+      // //Called in every read call and constructor.
+      // void calulate_rem_file();
   };
 }
 #endif
