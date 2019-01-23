@@ -6,7 +6,7 @@ namespace sockets{
       //Do some exception stuff
       std::cout << "Failed to make" << std::endl;
     }
-    port = 8008;
+    port = 4003;
 
     timeout.tv_sec=50;
     timeout.tv_usec=0;
@@ -24,6 +24,10 @@ namespace sockets{
   void udp_socket::send_packet(packet_system::packet& send_packet){
     char* packet = new char[1029];
     send_packet.construct_packet(packet);
+    for(int i = 2; i < 22; ++i){
+      std::cout << packet[i];
+    }
+    std::cout << std::endl;
     sendto(socket_file_descriptor,packet, packet_system::packet::PACKET_SIZE, 
         0, (struct sockaddr*)&clientaddr, sizeof(clientaddr));
   }
@@ -34,7 +38,6 @@ namespace sockets{
 
     int success = recvfrom(socket_file_descriptor, buffer, 1030, 0, (sockaddr*)&clientaddr, &len);
     if(success != -1){
-      std::cout << "Ding" << std::endl;
       recv_packet.assemble_sent_packet(buffer);
     }
 

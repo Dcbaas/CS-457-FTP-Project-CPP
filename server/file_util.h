@@ -19,9 +19,6 @@ namespace file_util{
        * Param: filename the name of the file.
        * Param: read sets weather the file is read or write.
        **/
-      file_obj(std::string filename, bool read);
-
-      file_obj& operator=(file_obj other);
 
       void update_objet(std::string filename, bool read);
 
@@ -35,6 +32,8 @@ namespace file_util{
        * default is 1024;
        **/
       void read_file(char* buffer, size_t num_bytes = 1024);
+
+      void write_file(char* buffer, size_t num_bytes = 1024);
 
       /**
        * Gets the size of the file
@@ -58,16 +57,11 @@ namespace file_util{
     private:
       //A bool to set read or write only
       bool read;
-      //The name of the file
+
       std::string filename;
 
-      //The instream if the file is read only
-      std::ifstream in_stream;
+      FILE* file_descriptor;
 
-      //The outstream if the file is write only
-      std::ofstream out_stream;
-
-      //The size of the file
       size_t filesize;
 
       //The size of the remaining file in readmode;

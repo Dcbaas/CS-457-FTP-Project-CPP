@@ -1,4 +1,5 @@
 #include "ftp_client.h"
+#include <fstream>
 
 namespace ftp{
   ftp_client::ftp_client(){}
@@ -7,17 +8,18 @@ namespace ftp{
     setup_client();
     std::cout << "ding" <<std::endl;
     send_request();
-    // //TODO: wait for a packet that says this file exist then do the rest
-    // while(end == false){
-    //   //rename to get transmission
-    //   get_transmission();
-    //   consolidate_transmission();
-    //   send_ack();
-    //   if(end == false){
-    //     update_pipline();
-    //   }
-    // }
+    //TODO: wait for a packet that says this file exist then do the rest
+    while(end == false){
+      //rename to get transmission
+      get_transmission();
+      consolidate_transmission();
+      send_ack();
+      if(end == false){
+        update_pipline();
+      }
+    }
     // file.~file_obj();
+    file.end_file();
     std::cout << "end" <<std::endl;
     return;
     //Reset when done.
@@ -31,7 +33,8 @@ namespace ftp{
     // std::cout << "Writing packet" << std::endl;
     packet_system::packet file_req{filename};
     // std::cout << "Wrote packet" << std::endl;
-    file.update_objet(filename, false);
+    file.start_file(filename);
+    std::ofstream file(filename);
     socket.send_packet(file_req);
     std::cout << "Sent packet" << std::endl;
   }
